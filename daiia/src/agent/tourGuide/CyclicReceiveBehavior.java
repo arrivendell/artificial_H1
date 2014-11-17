@@ -25,7 +25,7 @@ public class CyclicReceiveBehavior extends CyclicBehaviour{
         ACLMessage msg = myAgent.receive(MessageTemplate.MatchSender(new AID("profiler", AID.ISLOCALNAME)));
         
         if (msg != null) {
-            String interests = msg.getContent();
+            final String interests = msg.getContent();
             myAgent.addBehaviour(new OneShotBehaviour() {
 
                 @Override
