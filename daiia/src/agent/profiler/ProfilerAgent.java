@@ -7,6 +7,8 @@ package agent.profiler;
 
 import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.DataStore;
+import jade.core.behaviours.SequentialBehaviour;
 import java.util.ArrayList;
 
 /**
@@ -19,7 +21,7 @@ public class ProfilerAgent extends Agent {
     public Profile profile;
     public AID curator;
     public ArrayList<String> museums = new ArrayList<String>();
-
+    public ArrayList<String> tour = new ArrayList<String>();
     
     @Override
         protected void setup() {
@@ -51,7 +53,11 @@ public class ProfilerAgent extends Agent {
         }
         
         private void RequestTour(){
-            addBehaviour(new SendInterests(this));
+            SequentialBehaviour sequencebehaviour = new SequentialBehaviour(this);
+            sequencebehaviour.addSubBehaviour(new SendInterests(this));
+            DataStore datastore = new DataStore();
+            sequencebehaviour.addSubBehaviour(new ReceiveTour(this));
+            addBehaviour(sequencebehaviour);
             //ici add behaviour qui envoie les interests au tour guide
         }
     
