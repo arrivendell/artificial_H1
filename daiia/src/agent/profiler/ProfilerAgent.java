@@ -33,7 +33,8 @@ public class ProfilerAgent extends Agent {
         interests.add("religion");
         interests.add("middle-age");
         profile = new Profile("Michel", 46, "teacher", "Male", interests);
-
+       // SearchingMuseum();
+        RequestTour();
         
         
     }
