@@ -22,7 +22,7 @@ public class CyclicTourSetBehavior extends CyclicBehaviour{
           ACLMessage msg = myAgent.receive(MessageTemplate.MatchSender(new AID("curator", AID.ISLOCALNAME)));
         
         if (msg != null) {
-            String listPieces = msg.getContent();
+            final String listPieces = msg.getContent();
             myAgent.addBehaviour(new OneShotBehaviour() {
 
                 @Override
