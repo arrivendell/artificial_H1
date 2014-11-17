@@ -12,6 +12,7 @@ import jade.core.Agent;
  * @author nightwish
  */
 public class CuratorAgent extends Agent {
+    
         protected void setup() {
         // Printout a welcome message
         System.out.println("Hallo! CuratorAgent"+ getAID().getName()+" is ready.");
