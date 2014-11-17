@@ -28,7 +28,7 @@ class SendInterests extends OneShotBehaviour {
     
     @Override
     public void action(){
-                
+        System.out.println("<" + myAgent.getLocalName() + ">: on va envoyer notre liste d'interets au tour guide");
         ArrayList<String> listeinterets = profileragent.profile.getInterests();
         Iterator<String> it = listeinterets.iterator();
         String tosend = new String();
@@ -37,7 +37,8 @@ class SendInterests extends OneShotBehaviour {
                String s = it.next();
                tosend +=s +";";
         }
-        
+        System.out.println("<" + myAgent.getLocalName() + ">: voici le message @guide"+tosend);
+
         ACLMessage message = new ACLMessage(ACLMessage.INFORM);
         message.addReceiver(new AID("tourguide", AID.ISLOCALNAME));
         message.setContent(tosend);
