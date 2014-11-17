@@ -16,7 +16,8 @@ import java.util.ArrayList;
 public class ProfilerAgent extends Agent {
     
     public AID id = new AID("profiler", AID.ISLOCALNAME);
-    private Profile profile;
+    public Profile profile;
+    public AID curator;
     public ArrayList<String> museums = new ArrayList<String>();
 
     
@@ -36,18 +37,20 @@ public class ProfilerAgent extends Agent {
         
         
     }
-        private void SearchingTheWeb(){
+        private void SearchingMuseum(){
             
-            //ici add du behaviour cyclic pour recherche sur internet
+            addBehaviour(new BrowseTheInternet(this, 1000));
         }
         
         private void RequestInformationArtefact(String museumname, String artefactname){
+            
+            
             
             //ici ajouter le behaviour qui demande (au curator) les infos sur l'artefact
         }
         
         private void RequestTour(){
-            
+            addBehaviour(new SendInterests(this));
             //ici add behaviour qui envoie les interests au tour guide
         }
     
