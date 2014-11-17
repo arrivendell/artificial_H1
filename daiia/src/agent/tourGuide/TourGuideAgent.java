@@ -18,9 +18,11 @@ public class TourGuideAgent extends Agent {
         // Printout a welcome message
         System.out.println("Hallo! TourGuideAgent"+ getAID().getName()+" is ready.");
         System.out.println("Adding parallel behavior");
-        ParallelBehaviour ParBehavior = new ParallelBehaviour();
+        ParallelBehaviour ParBehavior = new ParallelBehaviour(ParallelBehaviour.WHEN_ALL);
         ParBehavior.addSubBehaviour(new CyclicReceiveBehavior());
-       
+        ParBehavior.addSubBehaviour(new CyclicTourSetBehavior());
+        addBehaviour(ParBehavior);
+
     }
     
 }
