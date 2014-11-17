@@ -22,7 +22,7 @@ public class CyclicReceiveBehavior extends CyclicBehaviour{
    
     @Override
     public void action(){
-        ACLMessage msg = myAgent.receive();
+        ACLMessage msg = myAgent.receive(MessageTemplate.MatchSender(new AID("profiler", AID.ISLOCALNAME)));
         
         if (msg != null) {
             String interests = msg.getContent();
@@ -33,7 +33,7 @@ public class CyclicReceiveBehavior extends CyclicBehaviour{
                     ACLMessage msgToSend = new ACLMessage(ACLMessage.REQUEST);
                     msgToSend.setContent(interests);
                     msgToSend.addReceiver(new AID("curator", AID.ISLOCALNAME));
-                    System.out.println("Sending message to curator");
+                    System.out.printf("Sending message %s to curator", interests);
                     myAgent.send(msgToSend);
                 }
             });
