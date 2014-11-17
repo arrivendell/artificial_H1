@@ -12,6 +12,8 @@ import jade.core.Agent;
  * @author nightwish
  */
 public class ProfilerAgent extends Agent {
+    
+    private Profile profile;
         protected void setup() {
         // Printout a welcome message
         System.out.println("Hallo! ProfilerAgent"+ getAID().getName()+" is ready.");
