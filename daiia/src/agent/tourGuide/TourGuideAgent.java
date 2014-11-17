@@ -6,6 +6,8 @@
 package agent.tourGuide;
 
 import jade.core.Agent;
+import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.ParallelBehaviour;
 
 /**
  *
@@ -15,6 +17,10 @@ public class TourGuideAgent extends Agent {
         protected void setup() {
         // Printout a welcome message
         System.out.println("Hallo! TourGuideAgent"+ getAID().getName()+" is ready.");
+        System.out.println("Adding parallel behavior");
+        ParallelBehaviour ParBehavior = new ParallelBehaviour();
+        ParBehavior.addSubBehaviour(new CyclicReceiveBehavior());
+       
     }
     
 }
