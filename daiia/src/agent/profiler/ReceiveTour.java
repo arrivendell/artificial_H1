@@ -5,7 +5,6 @@
  */
 package agent.profiler;
 
-import jade.core.behaviours.DataStore;
 import jade.lang.acl.ACLMessage;
 import jade.proto.states.MsgReceiver;
 

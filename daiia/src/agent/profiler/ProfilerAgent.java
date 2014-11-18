@@ -48,9 +48,9 @@ public class ProfilerAgent extends Agent {
             addBehaviour(new BrowseTheInternet(this, 1000));
         }
         
-        private void RequestInformationArtefact(String museumname, String artefactname){
+        private void StartVisitAndRequestInformationArtefact(String museumname, String artefactname){
             
-            
+            addBehaviour(new TickerAskInfo(this, 60000, tour));
             
             //ici ajouter le behaviour qui demande (au curator) les infos sur l'artefact
         }
