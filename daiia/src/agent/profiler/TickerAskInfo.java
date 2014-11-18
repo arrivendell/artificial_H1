@@ -24,7 +24,8 @@ class TickerAskInfo extends TickerBehaviour {
     public TickerAskInfo(ProfilerAgent profileragent, long period, ArrayList<String> tour) {
         super(profileragent, period);
         this.profileragent = profileragent;
-        this.tour = tour;
+        this.tour = new ArrayList<>(tour);
+        this.it = this.tour.iterator();
     }
     
     
