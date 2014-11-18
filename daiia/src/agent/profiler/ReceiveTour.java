@@ -17,8 +17,6 @@ class ReceiveTour extends MsgReceiver {
     ProfilerAgent profileragent;
     
     public ReceiveTour(ProfilerAgent profileragent) {
-        long timeout = 10000;
-        super.deadline = timeout;
     this.profileragent = profileragent;
     }
     
