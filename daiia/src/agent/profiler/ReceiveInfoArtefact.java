@@ -90,16 +90,16 @@ class ReceiveInfoArtefact extends OneShotBehaviour{
                     //System.out.println(s);
                     switch(entry){
                         case 0:
-                            System.out.println("<" + myAgent.getLocalName() + ">: Le nom de l'oeuvre est : "+s);
+                            System.out.println("<" + myAgent.getLocalName() + ">: **** ArtWork name is : "+s);
                             break;
                         case 1 : 
-                            System.out.println("<" + myAgent.getLocalName() + ">: L'auteur de l'oeuvre est : "+s);
+                            System.out.println("<" + myAgent.getLocalName() + ">: **** The creator is : "+s);
                             break;
                         case 2 : 
-                            System.out.println("<" + myAgent.getLocalName() + ">: Voici plus de détails : "+s);
+                            System.out.println("<" + myAgent.getLocalName() + ">: **** Description : "+s);
                             break;
                         default : 
-                            System.out.println("<" + myAgent.getLocalName() + ">: ERROR DANS LE NB D'ENTRY");
+                            System.out.println("<" + myAgent.getLocalName() + ">: ENTRY NUMBER ERROR");
                             break;
                     }
                     entry++;

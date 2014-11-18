@@ -55,7 +55,7 @@ public class ProfilerAgent extends Agent {
         SearchConstraints sc = new SearchConstraints();
 
         send(DFService.createSubscriptionMessage(this, getDefaultDF(), dfd, sc));
-
+        System.err.format("New subscribtion to : %s \r\n", sd.getType());
         addBehaviour( new SubscriptionInitiator( this, 
             DFService.createSubscriptionMessage( this, getDefaultDF(),dfd, null)) 
            {
@@ -64,8 +64,7 @@ public class ProfilerAgent extends Agent {
                         DFAgentDescription[] dfds = DFService.decodeNotification(inform.getContent()); 
                         int d=0;
                         for(DFAgentDescription dfad : dfds){
-                                System.out.format("<%s>: Message %d reçu, son nom est : %s \r\n" , getLocalName(),d,  dfad.getName());
-                                d++;
+                                System.out.format("<%s>: **** Notification : a new subscirbed service had been added by : %s \r\n" , getLocalName(),d,  dfad.getName());
                             }
                         //do something with dfds
                     }
