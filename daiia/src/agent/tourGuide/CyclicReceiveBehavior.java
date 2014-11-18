@@ -43,8 +43,6 @@ public class CyclicReceiveBehavior extends CyclicBehaviour{
         }
     }
     
-    private List<String> parseInterest(String interests){
-        return Arrays.asList(interests.split("#")[1].split(";"));
-    }
+
     
 }

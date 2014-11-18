@@ -37,6 +37,9 @@ public class ProfilerAgent extends Agent {
         profile = new Profile("Michel", 46, "teacher", "Male", interests);
        // SearchingMuseum();
         RequestTour();
+        RequestTour();
+        RequestTour();
+        RequestTour();
         
         
     }

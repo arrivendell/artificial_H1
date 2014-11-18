@@ -30,7 +30,7 @@ public class CyclicTourSetBehavior extends CyclicBehaviour{
                     ACLMessage msgToSend = new ACLMessage(ACLMessage.REQUEST);
                     msgToSend.setContent(listPieces);
                     msgToSend.addReceiver(new AID("profiler", AID.ISLOCALNAME));
-                    System.out.println("Sending message to profiler");
+                    System.out.format("Sending message <%s> to profiler \r\n", listPieces);
                     myAgent.send(msgToSend);
                 }
             });
