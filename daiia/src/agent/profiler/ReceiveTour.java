@@ -37,7 +37,7 @@ class ReceiveTour extends MsgReceiver {
             
             for(String s : Arrays.asList(received.split(";")))
             {
-                    System.out.println(s);
+                    //System.out.println(s);
                     profileragent.tour.add(s);
             }
         }

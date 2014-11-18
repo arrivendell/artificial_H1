@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author nightwish
  */
-public class CyclicReceiveBehavior extends CyclicBehaviour{
+public class CyclicReceiveInterestBehavior extends CyclicBehaviour{
    
     @Override
     public void action(){
@@ -28,7 +28,7 @@ public class CyclicReceiveBehavior extends CyclicBehaviour{
                     ACLMessage msgToSend = new ACLMessage(ACLMessage.REQUEST);
                     msgToSend.setContent(interests);
                     msgToSend.addReceiver(new AID("curator", AID.ISLOCALNAME));
-                    System.out.printf("Sending message %s to curator", interests);
+                    System.out.printf("<%s> : Sending message %s to curator", myAgent.getLocalName(), interests);
                     myAgent.send(msgToSend);
                 }
             });
