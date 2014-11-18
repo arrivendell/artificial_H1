@@ -42,7 +42,11 @@ public class ProfilerAgent extends Agent {
         DFAgentDescription[] result = null;
         try {
             result = DFService.search(this, dfd);
-        } catch (FIPAException fe) {
+            if (result.length>0) 
+                System.out.println("<" + getLocalName() + ">: Service trouvé : " + result[0].getName());
+            else
+                System.out.println("<" + getLocalName() + ">: Aucun service proposition de tour n'a été trouvé " + result[0].getName());                
+            } catch (FIPAException fe) {
             fe.printStackTrace();
         }
         
