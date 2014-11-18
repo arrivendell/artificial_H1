@@ -17,41 +17,46 @@ import java.util.Arrays;
  *
  * @author Nabil
  */
-/*class ReceiveTour extends MsgReceiver {
+class ReceiveTour extends MsgReceiver {
 
     ProfilerAgent profileragent;
     
-    public ReceiveTour(ProfilerAgent profileragent, MessageTemplate mt, long deadline, DataStore ds, Object key) {
-        super(profileragent, mt, deadline, ds, key);
+    public ReceiveTour(ProfilerAgent profileragent) { //, MessageTemplate mt, long deadline, DataStore ds, Object key
+        super();//, mt, deadline, ds, key);
         this.profileragent = profileragent;
     }
     
     @Override
-    protected void handleMessage(ACLMessage msg) {
+    public void action() {
             System.out.println("<" + myAgent.getLocalName() + ">: On est dans HANDLE MESSAGE");
-
-            if (msg == null) {
-                System.out.println("<" + myAgent.getLocalName() + ">: Message NULL");
-            } else {
+        ACLMessage msg = myAgent.blockingReceive(MessageTemplate.MatchSender(profileragent.tourGuide));
+        
+        if (msg != null) {
             System.out.println("<" + myAgent.getLocalName() + ">: Message recu, contient la liste des oeuvres du tour");
         
             String received = msg.getContent();
-
-            String temp = new String();
+            
             int j=0;
             int length = received.length();
-            for(int i = 0; i<=length; i++){
-                if ((received.charAt(i)==';')||(i==length)){
-                    temp = received.substring(j, i-1);
-                    j = i+1;
-                    profileragent.tour.add(temp);
-                }
+            
+            for(String s : Arrays.asList(received.split(";")))
+            {
+                    System.out.println(s);
+                    profileragent.tour.add(s);
             }
-            }     
+        }
+        else {
+             System.out.println("<" + myAgent.getLocalName() + ">: Message NULL");
+            block();
+        }
     }    
-}*/
+    @Override
+    public boolean done() {
+        return true;
+    }
+}
 
-
+/*
 class ReceiveTour extends OneShotBehaviour {
 
     ProfilerAgent profileragent;
@@ -86,4 +91,4 @@ class ReceiveTour extends OneShotBehaviour {
             block();
         }
     }
-    }    
+    }    */
