@@ -17,11 +17,15 @@ class ReceiveTour extends MsgReceiver {
     ProfilerAgent profileragent;
     
     public ReceiveTour(ProfilerAgent profileragent) {
+        long timeout = 10000;
+        super.deadline = timeout;
     this.profileragent = profileragent;
     }
     
     @Override
     protected void handleMessage(ACLMessage msg) {
+            System.out.println("<" + myAgent.getLocalName() + ">: On est dans HANDLE MESSAGE");
+
             if (msg == null) {
                 System.out.println("<" + myAgent.getLocalName() + ">: Message NULL");
             } else {
