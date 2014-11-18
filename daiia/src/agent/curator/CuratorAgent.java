@@ -169,8 +169,10 @@ public class CuratorAgent extends Agent {
                 System.out.println("<curator> get details");
                 String nameArtWork = msgReceived.getContent();
                             
-                if (catalog.contains(new ArtWork(nameArtWork))) {
+                ArtWork toFind = new ArtWork(nameArtWork);
+                if (catalog.contains(toFind)) {
                     result = 10;
+                    msgToSend = catalog.get(catalog.indexOf(toFind)).toString();
                 }
                 else {
                     result = 11;
