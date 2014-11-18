@@ -31,40 +31,44 @@ public class CuratorAgent extends Agent {
         // Printout a welcome message
         System.out.println("Hallo! CuratorAgent"+ getAID().getName()+" is ready.");
         initialiseCatalog();
-        FSMBehaviour fsm = new FSMBehaviour(this){
-            @Override
-            public int onEnd() {
-                System.out.println("Fsm exit");
-                return super.onEnd();
-            }
-        };
-        
-        //State definitions
-        fsm.registerFirstState(new initialReceiveBehaviour(), "Initial");
-        fsm.registerState(new getCatalogBehavior(), "getcatalog");
-        fsm.registerState(new getDetailsBehavior(), "getdetails");
-        fsm.registerLastState(new sendCatalogBehaviour(), "sendcatalog");
-        fsm.registerLastState(new sendDetailsBehavior(), "senddetails");
-        fsm.registerLastState(new sendNUProfilerBehavior(), "sendnuprofiler");
-        fsm.registerLastState(new sendNUTourguideBehavior(), "sendnutourguide");
-        
-        //transitions definition
-        fsm.registerTransition("Initial", "getcatalog", 2);
-        fsm.registerTransition("Initial", "getdetails", 1);
-        fsm.registerTransition("getcatalog", "sendcatalog", 12);
-        fsm.registerTransition("getcatalog", "sendnutourguide", 9);
-        fsm.registerTransition("getdetails", "senddetails", 10);
-        fsm.registerTransition("getdetails", "sendnuprofiler", 11);
-        fsm.registerTransition("Initial", "Initial", 0);
-        
-        System.out.println("<curator> adding fsm");
-                
-        addBehaviour(new CyclicBehaviour() {
+       /* addBehaviour(new CyclicBehaviour() {
             @Override
             public void action() {
-                myAgent.addBehaviour(fsm);
-            }
-        });
+                */
+                FSMBehaviour fsm = new FSMBehaviour(this){
+                @Override
+                public int onEnd() {
+                    reset();
+                    myAgent.addBehaviour(this);
+                    System.out.println("Fsm exit");
+                    return super.onEnd();
+                }
+            };
+        
+                //State definitions
+                fsm.registerFirstState(new initialReceiveBehaviour(), "Initial");
+                fsm.registerState(new getCatalogBehavior(), "getcatalog");
+                fsm.registerState(new getDetailsBehavior(), "getdetails");
+                fsm.registerLastState(new sendCatalogBehaviour(), "sendcatalog");
+                fsm.registerLastState(new sendDetailsBehavior(), "senddetails");
+                fsm.registerLastState(new sendNUProfilerBehavior(), "sendnuprofiler");
+                fsm.registerLastState(new sendNUTourguideBehavior(), "sendnutourguide");
+
+                //transitions definition
+                fsm.registerTransition("Initial", "getcatalog", 2);
+                fsm.registerTransition("Initial", "getdetails", 1);
+                fsm.registerTransition("getcatalog", "sendcatalog", 12);
+                fsm.registerTransition("getcatalog", "sendnutourguide", 9);
+                fsm.registerTransition("getdetails", "senddetails", 10);
+                fsm.registerTransition("getdetails", "sendnuprofiler", 11);
+                fsm.registerTransition("Initial", "Initial", 0);
+
+                System.out.println("<curator> adding fsm");
+                
+        
+                addBehaviour(fsm);
+            //}
+        //});
         
     }
         
@@ -93,14 +97,14 @@ public class CuratorAgent extends Agent {
                     
                     final String name = msgReceived.getContent();
                     String senderName = msgReceived.getSender().getLocalName();
-                    System.out.format("sender : <%s>", senderName);
-                    if( senderName == "profiler" ) {
+                    System.out.format("sender : <%s> \r\n", senderName);
+                    if( senderName.equals("profiler") ) {
                         result = 1;
-                        System.out.format("<curator> Profiler requested details of %s", msgReceived.getContent());
+                        System.out.format("<curator> Profiler requested details of %s \r\n", msgReceived.getContent());
                     } 
-                    else if (senderName == "tourguide"){
+                    else if (senderName.equals("tourguide")){
                         result = 2;
-                        System.out.format("<curator> Profiler requested catalog with interest of %s", msgReceived.getContent());
+                        System.out.format("<curator> Profiler requested catalog with interest of %s \r\n ", msgReceived.getContent());
                     }
                     else {
                         System.out.println("<curator> Message unknown received");
@@ -109,12 +113,13 @@ public class CuratorAgent extends Agent {
 
                 }
                 else {
+                    result=0;
                     block();
                 }
             }
             
             public int onEnd(){
-                System.out.format("<initialReceiveBehaviour> ended with transition %d ", result);
+                System.out.format("<initialReceiveBehaviour> ended with transition %d \r\n", result);
                 return result;
             }
         }
@@ -140,17 +145,18 @@ public class CuratorAgent extends Agent {
                 
                 if (catalogToSend.size() == 0){
                     result = 9;
+
+                }
+                else {
+                    result = 12;
                     for (ArtWork aw : catalogToSend){
                         msgToSend += aw.toString() + ";";
                     }
                 }
-                else {
-                    result = 12;
-                }
             }
             
             public int onEnd(){
-                System.out.format("<getCatalogBehavior> ended with transition %d", result);
+                System.out.format("<getCatalogBehavior> ended with transition %d \r\n", result);
                 return result;
             }
         }
@@ -173,7 +179,7 @@ public class CuratorAgent extends Agent {
             }
             
             public int onEnd(){
-                System.out.format("<getDetailsBehavior> ended with transition %d", result);
+                System.out.format("<getDetailsBehavior> ended with transition %d\r\n", result);
                 return result;
             }
         }
@@ -225,6 +231,6 @@ public class CuratorAgent extends Agent {
         }
         
     private List<String> parseInterest(String interests){
-        return Arrays.asList(interests.split("#")[1].split(";"));
+        return Arrays.asList(interests.split(";"));
     }
 }
