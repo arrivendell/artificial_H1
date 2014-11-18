@@ -18,28 +18,32 @@ class TickerAskInfo extends TickerBehaviour {
     
     private ProfilerAgent profileragent;
     private ArrayList<String> tour = new ArrayList<>();
-    private Iterator<String> it = tour.iterator();
+    //private Iterator<String> it = tour.iterator();
     private String temp = new String();
-
+    private int counterTour = 0;
+    
     public TickerAskInfo(ProfilerAgent profileragent, long period, ArrayList<String> tour) {
         super(profileragent, period);
         this.profileragent = profileragent;
-        this.tour = new ArrayList<>(tour);
-        this.it = this.tour.iterator();
+        this.tour = tour;
+        System.out.println("CONSTRUCTOR TICKERASKINFO ");
     }
     
     
     protected void onTick(){
-        if (it.hasNext()){
+        if (counterTour < this.tour.size()){
             System.out.println("<" + myAgent.getLocalName() + ">: On arrive devant un nouvel artefact");
-
-            temp = it.next();
+            temp = this.tour.get(counterTour);
             SequentialBehaviour sequencebehaviour = new SequentialBehaviour(this.profileragent);
             sequencebehaviour.addSubBehaviour(new SendNameArtefact(this.profileragent, temp));
             sequencebehaviour.addSubBehaviour(new ReceiveInfoArtefact(this.profileragent));
             this.profileragent.addBehaviour(sequencebehaviour);
+            counterTour++;
         }
-        System.out.println("<" + myAgent.getLocalName() + ">: Il n'y a plus rien à visiter dans ce tour");
+        else {
+            System.out.println("<" + myAgent.getLocalName() + ">: Il n'y a rien à visiter");
+            counterTour = 0;
+        }
         
     }
 }

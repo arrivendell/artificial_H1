@@ -8,6 +8,7 @@ package agent.profiler;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.DataStore;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.SequentialBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -56,8 +57,15 @@ public class ProfilerAgent extends Agent {
         profile = new Profile("Michel", 46, "teacher", "Male", interests);
        // SearchingMuseum();
         RequestTour();
-        StartVisitAndRequestInformationArtefact("","");
-        
+        /*OneShotBehaviour startVisit = new OneShotBehaviour() {
+
+            @Override
+            public void action() {
+                StartVisitAndRequestInformationArtefact("","");
+            }
+        };
+        addBehaviour(startVisit);*/
+                
     }
         private void SearchingMuseum(){
             
@@ -74,14 +82,11 @@ public class ProfilerAgent extends Agent {
         
         private void RequestTour(){
             SequentialBehaviour sequencebehaviour = new SequentialBehaviour(this);
-            sequencebehaviour.addSubBehaviour(new SendInterests(this));
-            MessageTemplate mt = MessageTemplate.MatchSender(new AID("tourguide", AID.ISLOCALNAME));
-            DataStore ds = new DataStore();
-            
+            sequencebehaviour.addSubBehaviour(new SendInterests(this));            
             ReceiveTour rt = new ReceiveTour(this);
             //rt.setTemplate(mt);
             sequencebehaviour.addSubBehaviour(rt);
-            
+            sequencebehaviour.addSubBehaviour(new TickerAskInfo(this, 6000, tour));
             addBehaviour(sequencebehaviour);
             
             //ici add behaviour qui envoie les interests au tour guide

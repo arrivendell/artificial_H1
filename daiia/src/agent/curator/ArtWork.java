@@ -77,7 +77,7 @@ public class ArtWork {
             result = false;
         } else {
             ArtWork aw = (ArtWork) obj;
-            if (this.name == aw.getName()) {
+            if (this.name.equals(aw.getName())) {
                 result = true;
             }
         }
