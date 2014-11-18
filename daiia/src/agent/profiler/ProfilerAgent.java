@@ -9,6 +9,10 @@ import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.DataStore;
 import jade.core.behaviours.SequentialBehaviour;
+import jade.domain.DFService;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.domain.FIPAException;
 import jade.lang.acl.MessageTemplate;
 import java.util.ArrayList;
 
@@ -28,6 +32,20 @@ public class ProfilerAgent extends Agent {
         protected void setup() {
         // Printout a welcome message
         System.out.println("Hallo! ProfilerAgent"+ getAID().getName()+" is ready.");
+        
+        
+        DFAgentDescription dfd = new DFAgentDescription();
+        ServiceDescription sd = new ServiceDescription();
+        sd.setType("proposition de tour");
+        dfd.addServices(sd);
+        DFAgentDescription[] result = null;
+        try {
+            result = DFService.search(this, dfd);
+        } catch (FIPAException fe) {
+            fe.printStackTrace();
+        }
+        
+        
         
         
         ArrayList<String> interests = new ArrayList<>();

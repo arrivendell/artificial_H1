@@ -5,15 +5,24 @@
  */
 package agent.tourGuide;
 
+import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.ParallelBehaviour;
+import jade.domain.DFService;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.domain.FIPAException;
 
 /**
  *
  * @author nightwish
  */
 public class TourGuideAgent extends Agent {
+    
+        private AID id = new AID("tourguide", AID.ISLOCALNAME);
+
+    
         protected void setup() {
         // Printout a welcome message
         System.out.println("Hallo! TourGuideAgent"+ getAID().getName()+" is ready.");
@@ -22,6 +31,20 @@ public class TourGuideAgent extends Agent {
         ParBehavior.addSubBehaviour(new CyclicReceiveBehavior());
         ParBehavior.addSubBehaviour(new CyclicTourSetBehavior());
         addBehaviour(ParBehavior);
+        
+        DFAgentDescription dfd = new DFAgentDescription();
+        
+        dfd = new DFAgentDescription();
+        dfd.setName(id);
+        ServiceDescription sd = new ServiceDescription();
+        sd.setType("proposition de tour");
+        sd.setName(getLocalName());
+        dfd.addServices(sd);
+        try {
+            DFService.register(this, dfd);
+        } catch (FIPAException fe) {
+            fe.printStackTrace();
+        }
 
     }
     
