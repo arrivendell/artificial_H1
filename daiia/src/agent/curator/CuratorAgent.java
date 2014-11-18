@@ -93,6 +93,8 @@ public class CuratorAgent extends Agent {
                 msgReceived = myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
                 
                 if (msgReceived != null) {
+                    msgToSend = "";
+                    
                     System.out.println("<curator> Message received");
                     
                     final String name = msgReceived.getContent();
