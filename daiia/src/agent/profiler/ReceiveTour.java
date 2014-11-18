@@ -5,7 +5,9 @@
  */
 package agent.profiler;
 
+import jade.core.behaviours.DataStore;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import jade.proto.states.MsgReceiver;
 
 /**
@@ -16,8 +18,9 @@ class ReceiveTour extends MsgReceiver {
 
     ProfilerAgent profileragent;
     
-    public ReceiveTour(ProfilerAgent profileragent) {
-    this.profileragent = profileragent;
+    public ReceiveTour(ProfilerAgent profileragent, MessageTemplate mt, long deadline, DataStore ds, Object key) {
+        super(profileragent, mt, deadline, ds, key);
+        this.profileragent = profileragent;
     }
     
     @Override
