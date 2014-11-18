@@ -9,6 +9,7 @@ import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.DataStore;
 import jade.core.behaviours.SequentialBehaviour;
+import jade.lang.acl.MessageTemplate;
 import java.util.ArrayList;
 
 /**
@@ -58,8 +59,13 @@ public class ProfilerAgent extends Agent {
         private void RequestTour(){
             SequentialBehaviour sequencebehaviour = new SequentialBehaviour(this);
             sequencebehaviour.addSubBehaviour(new SendInterests(this));
-            DataStore datastore = new DataStore();
-            sequencebehaviour.addSubBehaviour(new ReceiveTour(this));
+
+            ReceiveTour rt = new ReceiveTour(this);
+            MessageTemplate mt = MessageTemplate.MatchSender(new AID("tourguide", AID.ISLOCALNAME));
+            rt.setDeadline(10000);
+            rt.setTemplate(mt);
+            sequencebehaviour.addSubBehaviour(rt);
+            
             addBehaviour(sequencebehaviour);
             //ici add behaviour qui envoie les interests au tour guide
         }
