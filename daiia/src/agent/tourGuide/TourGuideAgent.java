@@ -20,7 +20,7 @@ import jade.domain.FIPAException;
  */
 public class TourGuideAgent extends Agent {
     
-        private AID id = new AID("tourguide", AID.ISLOCALNAME);
+        private AID id = getAID();
 
     
         protected void setup() {

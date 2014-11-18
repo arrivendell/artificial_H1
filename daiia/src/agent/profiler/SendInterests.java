@@ -40,7 +40,7 @@ class SendInterests extends OneShotBehaviour {
         System.out.println("<" + myAgent.getLocalName() + ">: voici le message @guide"+tosend);
 
         ACLMessage message = new ACLMessage(ACLMessage.INFORM);
-        message.addReceiver(new AID("tourguide", AID.ISLOCALNAME));
+        message.addReceiver(profileragent.tourGuide);
         message.setContent(tosend);
         myAgent.send(message);        
     }

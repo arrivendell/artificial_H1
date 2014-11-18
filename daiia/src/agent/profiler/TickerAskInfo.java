@@ -42,7 +42,7 @@ class TickerAskInfo extends TickerBehaviour {
         }
         else {
             System.out.println("<" + myAgent.getLocalName() + ">: Il n'y a rien à visiter");
-            counterTour = 0;
+            this.stop();
         }
         
     }

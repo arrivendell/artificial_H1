@@ -65,7 +65,7 @@ class ReceiveTour extends OneShotBehaviour {
     public void action() {
             
         System.out.println("<" + myAgent.getLocalName() + ">: On est dans HANDLE MESSAGE");
-        ACLMessage msg = myAgent.blockingReceive(MessageTemplate.MatchSender(new AID("tourguide", AID.ISLOCALNAME)));
+        ACLMessage msg = myAgent.blockingReceive(MessageTemplate.MatchSender(profileragent.tourGuide));
         
         if (msg != null) {
             System.out.println("<" + myAgent.getLocalName() + ">: Message recu, contient la liste des oeuvres du tour");

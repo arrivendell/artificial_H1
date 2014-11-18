@@ -24,7 +24,7 @@ public class CuratorAgent extends Agent {
         ACLMessage msgReceived;
         ArrayList<ArtWork> catalog= new ArrayList<>();
         String msgToSend = "";
-        
+        AID whomToSend = new AID();
         
         @Override
         protected void setup() {
@@ -98,11 +98,14 @@ public class CuratorAgent extends Agent {
                     final String name = msgReceived.getContent();
                     String senderName = msgReceived.getSender().getLocalName();
                     System.out.format("sender : <%s> \r\n", senderName);
-                    if( senderName.equals("profiler") ) {
+                    whomToSend = new AID(senderName, AID.ISLOCALNAME);
+
+                    
+                    if( senderName.contains("profiler") ) {
                         result = 1;
                         System.out.format("<curator> Profiler requested details of %s \r\n", msgReceived.getContent());
                     } 
-                    else if (senderName.equals("tourguide")){
+                    else if (senderName.contains("tourguide")){
                         result = 2;
                         System.out.format("<curator> Profiler requested catalog with interest of %s \r\n ", msgReceived.getContent());
                     }
@@ -199,7 +202,7 @@ public class CuratorAgent extends Agent {
                 
                 ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
                 msg.setContent(msgToSend);
-                msg.addReceiver(new AID("tourguide", AID.ISLOCALNAME));
+                msg.addReceiver(whomToSend);
                 send(msg);
 
             }
@@ -213,7 +216,7 @@ public class CuratorAgent extends Agent {
                 
                 ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
                 msg.setContent(msgToSend);
-                msg.addReceiver(new AID("profiler", AID.ISLOCALNAME));
+                msg.addReceiver(whomToSend);
                 send(msg);
             }
         }
@@ -224,7 +227,7 @@ public class CuratorAgent extends Agent {
                 System.out.println("<curator> send not understood");
                 
                 ACLMessage msg = new ACLMessage(ACLMessage.NOT_UNDERSTOOD);
-                msg.addReceiver(new AID("profiler", AID.ISLOCALNAME));
+                msg.addReceiver(whomToSend);
                 send(msg);
             }
         }
@@ -233,7 +236,7 @@ public class CuratorAgent extends Agent {
             public void action() {
                 System.out.println("<curator> send not understood");
                 ACLMessage msg = new ACLMessage(ACLMessage.NOT_UNDERSTOOD);
-                msg.addReceiver(new AID("tourgudie", AID.ISLOCALNAME));
+                msg.addReceiver(whomToSend);
                 send(msg);
             }
         }
