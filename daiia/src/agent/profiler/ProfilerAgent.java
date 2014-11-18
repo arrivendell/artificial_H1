@@ -48,6 +48,7 @@ public class ProfilerAgent extends Agent {
         
         private void StartVisitAndRequestInformationArtefact(String museumname, String artefactname){
             
+            System.out.println(this.tour.toString());
             addBehaviour(new TickerAskInfo(this, 2000, tour));
             
             //ici ajouter le behaviour qui demande (au curator) les infos sur l'artefact
@@ -59,11 +60,12 @@ public class ProfilerAgent extends Agent {
             MessageTemplate mt = MessageTemplate.MatchSender(new AID("tourguide", AID.ISLOCALNAME));
             DataStore ds = new DataStore();
             
-            ReceiveTour rt = new ReceiveTour(this, mt, 10000, ds, "cle");
-            rt.setTemplate(mt);
+            ReceiveTour rt = new ReceiveTour(this);
+            //rt.setTemplate(mt);
             sequencebehaviour.addSubBehaviour(rt);
             
             addBehaviour(sequencebehaviour);
+            
             //ici add behaviour qui envoie les interests au tour guide
         }
     

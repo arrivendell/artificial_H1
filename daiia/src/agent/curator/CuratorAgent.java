@@ -133,7 +133,13 @@ public class CuratorAgent extends Agent {
                 System.out.println("<curator> get catalog");
                 String interests = msgReceived.getContent();
                 ArrayList<ArtWork> catalogToSend = new ArrayList<>();
-                List<String> listInterests = parseInterest(interests);
+                List<String> listInterests;
+                if (interests.length() != 0) {
+                    listInterests  = parseInterest(interests);
+                }
+                else {
+                    listInterests = new ArrayList<>();
+                }
                 
                 for (ArtWork aw : catalog ){
                     List<String> common = new ArrayList<>(aw.getTags());
@@ -150,7 +156,7 @@ public class CuratorAgent extends Agent {
                 else {
                     result = 12;
                     for (ArtWork aw : catalogToSend){
-                        msgToSend += aw.toString() + ";";
+                        msgToSend += aw.getName()+ ";";
                     }
                 }
             }
