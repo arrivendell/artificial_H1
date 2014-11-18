@@ -59,10 +59,10 @@ public class ProfilerAgent extends Agent {
         private void RequestTour(){
             SequentialBehaviour sequencebehaviour = new SequentialBehaviour(this);
             sequencebehaviour.addSubBehaviour(new SendInterests(this));
-
-            ReceiveTour rt = new ReceiveTour(this);
             MessageTemplate mt = MessageTemplate.MatchSender(new AID("tourguide", AID.ISLOCALNAME));
-            rt.setDeadline(10000);
+            DataStore ds = new DataStore();
+            
+            ReceiveTour rt = new ReceiveTour(this, mt, 10000, ds, "cle");
             rt.setTemplate(mt);
             sequencebehaviour.addSubBehaviour(rt);
             
