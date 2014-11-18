@@ -37,10 +37,7 @@ public class ProfilerAgent extends Agent {
         profile = new Profile("Michel", 46, "teacher", "Male", interests);
        // SearchingMuseum();
         RequestTour();
-        RequestTour();
-        RequestTour();
-        RequestTour();
-        
+        StartVisitAndRequestInformationArtefact("","");
         
     }
         private void SearchingMuseum(){
@@ -50,7 +47,7 @@ public class ProfilerAgent extends Agent {
         
         private void StartVisitAndRequestInformationArtefact(String museumname, String artefactname){
             
-            addBehaviour(new TickerAskInfo(this, 60000, tour));
+            addBehaviour(new TickerAskInfo(this, 2000, tour));
             
             //ici ajouter le behaviour qui demande (au curator) les infos sur l'artefact
         }
