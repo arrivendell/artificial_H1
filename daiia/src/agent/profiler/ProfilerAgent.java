@@ -11,8 +11,11 @@ import jade.core.behaviours.SequentialBehaviour;
 import jade.core.behaviours.WakerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.SearchConstraints;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import jade.lang.acl.ACLMessage;
+import jade.proto.SubscriptionInitiator;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -44,6 +47,35 @@ public class ProfilerAgent extends Agent {
         interests.add("religion");
         interests.add("middle-age");
         profile = new Profile("Michel", 46, "teacher", "Male", interests);
+        
+        DFAgentDescription dfd = new DFAgentDescription();
+        ServiceDescription sd = new ServiceDescription();
+        sd.setType("proposition de tour");
+        dfd.addServices(sd);
+        SearchConstraints sc = new SearchConstraints();
+
+        send(DFService.createSubscriptionMessage(this, getDefaultDF(), dfd, sc));
+
+        addBehaviour( new SubscriptionInitiator( this, 
+            DFService.createSubscriptionMessage( this, getDefaultDF(),dfd, null)) 
+           {
+                protected void handleInform(ACLMessage inform) {
+                    try {
+                        DFAgentDescription[] dfds = DFService.decodeNotification(inform.getContent()); 
+                        int d=0;
+                        for(DFAgentDescription dfad : dfds){
+                                System.out.format("<%s>: Message %d reçu, son nom est : %s \r\n" , getLocalName(),d,  dfad.getName());
+                                d++;
+                            }
+                        //do something with dfds
+                    }
+              catch (FIPAException fe) {fe.printStackTrace(); }
+            }
+            });
+
+        
+        
+        
        // SearchingMuseum();
         RequestTour();
         /*OneShotBehaviour startVisit = new OneShotBehaviour() {
