@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package agent.curator;
 
 import java.util.ArrayList;
@@ -71,6 +66,7 @@ public class ArtWork {
     
     
     @Override
+    // We consider 2 artwork equals by their name */
     public boolean equals(Object obj) {
         boolean result = false;
         if (obj == null || obj.getClass() != getClass()) {

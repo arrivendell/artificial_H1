@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package agent.profiler;
 
 import jade.core.AID;
@@ -34,23 +30,15 @@ public class ProfilerAgent extends Agent {
     public ArrayList<String> tour = new ArrayList<String>();
     
     @Override
-        protected void setup() {
+    protected void setup() {
         // Printout a welcome message
         System.out.println("Hallo! ProfilerAgent"+ getAID().getName()+" is ready.");
-        
-        
-       
-                
-        ArrayList<String> interests = new ArrayList<>();
-        interests.add("photography");
-        interests.add("20th century");
-        interests.add("religion");
-        interests.add("middle-age");
-        profile = new Profile("Michel", 46, "teacher", "Male", interests);
+                        
+        InitialiseProfile();
         
         DFAgentDescription dfd = new DFAgentDescription();
         ServiceDescription sd = new ServiceDescription();
-        sd.setType("proposition de tour");
+        sd.setType("tour proposal");
         dfd.addServices(sd);
         SearchConstraints sc = new SearchConstraints();
 
@@ -64,104 +52,97 @@ public class ProfilerAgent extends Agent {
                         DFAgentDescription[] dfds = DFService.decodeNotification(inform.getContent()); 
                         int d=0;
                         for(DFAgentDescription dfad : dfds){
-                                System.out.format("<%s>: **** Notification : a new subscirbed service had been added by : %s \r\n" , getLocalName(),d,  dfad.getName());
-                            }
+                            System.out.format("<%s>: **** Notification : a new subscirbed service had been added by : %s \r\n" , getLocalName(),d,  dfad.getName());
+                        }
                         //do something with dfds
                     }
               catch (FIPAException fe) {fe.printStackTrace(); }
             }
             });
 
-        
-        
-        
-       // SearchingMuseum();
         RequestTour();
-        /*OneShotBehaviour startVisit = new OneShotBehaviour() {
-
-            @Override
-            public void action() {
-                StartVisitAndRequestInformationArtefact("","");
-            }
-        };
-        addBehaviour(startVisit);*/
                 
     }
-        private void SearchingMuseum(){
-            
-            addBehaviour(new BrowseTheInternet(this, 1000));
-        }
-        
-        private void StartVisitAndRequestInformationArtefact(String museumname, String artefactname){
-            
-            System.out.println(this.tour.toString());
-            addBehaviour(new TickerAskInfo(this, 2000, tour));
-            
-            //ici ajouter le behaviour qui demande (au curator) les infos sur l'artefact
-        }
-        
-        private void RequestTour(){
-            
-             
-        
-            WakerBehaviour searchForService = new WakerBehaviour(this, 5000) {
-                @Override
-                protected void onWake(){
-                    DFAgentDescription dfd = new DFAgentDescription();
-                    ServiceDescription sd = new ServiceDescription();
-                    sd.setType("proposition de tour");
-                    dfd.addServices(sd);
-                    DFAgentDescription[] result = null;
-                    try {
-                        result = DFService.search(myAgent, dfd);
-                        if (result.length == 0) {
-                            System.out.println("<" + getLocalName() + ">: Aucun service proposition de tour n'a été trouvé ");   
-                        }
-                        else {
-                            int d = 0;
-                            for(DFAgentDescription dfad : result){
-                                System.out.format("<%s>: Service %d trouvé : %s \r\n" , getLocalName(),d,  dfad.getName());
-                                d++;
-                            }
+    
+    
+    /*private void SearchingMuseum(){
 
-                            int agentIndex ;
-                            Scanner input = new Scanner( System.in );
-                            System.out.println("-----------------------------------------------------------------------");
-                            System.out.println("Enter the agent you want to contact using the number given in the list");
-                            agentIndex = input.nextInt();//Try catch, to do if time
-                            while (agentIndex >= result.length){
-                                System.out.format("Error, the index %d is not in the list, please try again now \r\n", agentIndex);
-                                agentIndex = input.nextInt();
-                            }
-                            System.out.format("You choose : %s \r\n", result[agentIndex]);
-                            tourGuide = result[agentIndex].getName();
-                            System.out.println("-----------------------------------------------------------------------");
+        addBehaviour(new BrowseTheInternet(this, 1000));
+    }*/
 
-                        }
+    /*private void StartVisitAndRequestInformationArtefact(String museumname, String artefactname){
+
+        System.out.println(this.tour.toString());
+        addBehaviour(new TickerAskInfo(this, 2000, tour));
+
+    }*/
+
+    private void InitialiseProfile(){
+        ArrayList<String> interests = new ArrayList<>();
+        interests.add("photography");
+        interests.add("20th century");
+        interests.add("religion");
+        interests.add("middle-age");
+        profile = new Profile("Michel", 46, "teacher", "Male", interests);
+    }
+    private void RequestTour(){
+
+        WakerBehaviour searchForService = new WakerBehaviour(this, 5000) {
+            @Override
+            protected void onWake(){
+                DFAgentDescription dfd = new DFAgentDescription();
+                ServiceDescription sd = new ServiceDescription();
+                sd.setType("tour proposal");
+                dfd.addServices(sd);
+                DFAgentDescription[] result = null;
+                try {
+                    result = DFService.search(myAgent, dfd);
+                    if (result.length == 0) {
+                        System.out.println("<" + getLocalName() + ">: **** No services tour proposal has been found");   
                     }
-                    catch (FIPAException fe) {
-                        fe.printStackTrace();
+                    else {
+                        int d = 0;
+                        for(DFAgentDescription dfad : result){
+                            System.out.format("<%s>: **** Service %d found : %s \r\n" , getLocalName(),d,  dfad.getName());
+                            d++;
+                        }
+
+                        int agentIndex ;
+                        Scanner input = new Scanner( System.in );
+                        System.out.println("-----------------------------------------------------------------------");
+                        System.out.println("Enter the agent you want to contact using the number given in the list");
+                        agentIndex = input.nextInt();//Try catch, to do if time
+                        while (agentIndex >= result.length){
+                            System.out.format("Error, the index %d is not in the list, please try again now \r\n", agentIndex);
+                            agentIndex = input.nextInt();
+                        }
+                        System.out.format("You choose : %s \r\n", result[agentIndex]);
+                        tourGuide = result[agentIndex].getName();
+                        System.out.println("-----------------------------------------------------------------------");
+
                     }
                 }
-            };
-                    
-            SequentialBehaviour sequencebehaviour = new SequentialBehaviour(this){
-                @Override
-                public int onEnd(){
-                    reset();
-                    myAgent.addBehaviour(this);
-                    return super.onEnd();                            
+                catch (FIPAException fe) {
+                    fe.printStackTrace();
                 }
-            };
-            sequencebehaviour.addSubBehaviour(searchForService);            
-            sequencebehaviour.addSubBehaviour(new SendInterests(this));            
-            ReceiveTour rt = new ReceiveTour(this);
-            //rt.setTemplate(mt);
-            sequencebehaviour.addSubBehaviour(rt);
-            sequencebehaviour.addSubBehaviour(new TickerAskInfo(this, 6000, tour));
-            addBehaviour(sequencebehaviour);
-            
-            //ici add behaviour qui envoie les interests au tour guide
-        }
+            }
+        };
+
+        SequentialBehaviour sequencebehaviour = new SequentialBehaviour(this){
+            @Override
+            public int onEnd(){
+                reset();
+                myAgent.addBehaviour(this);
+                return super.onEnd();                            
+            }
+        };
+        sequencebehaviour.addSubBehaviour(searchForService);            
+        sequencebehaviour.addSubBehaviour(new SendInterests(this));            
+        ReceiveTour rt = new ReceiveTour(this);
+        
+        sequencebehaviour.addSubBehaviour(rt);
+        sequencebehaviour.addSubBehaviour(new TickerAskInfo(this, 6000, tour));
+        addBehaviour(sequencebehaviour);
+    }
     
 }

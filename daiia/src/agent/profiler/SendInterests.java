@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package agent.profiler;
 
 import jade.core.AID;
@@ -28,7 +23,7 @@ class SendInterests extends OneShotBehaviour {
     
     @Override
     public void action(){
-        System.out.println("<" + myAgent.getLocalName() + ">: on va envoyer notre liste d'interets au tour guide");
+        System.out.println("<" + myAgent.getLocalName() + ">: Interest list is going to be sent to the tour guide");
         ArrayList<String> listeinterets = profileragent.profile.getInterests();
         Iterator<String> it = listeinterets.iterator();
         String tosend = new String();
@@ -37,7 +32,7 @@ class SendInterests extends OneShotBehaviour {
                String s = it.next();
                tosend +=s +";";
         }
-        System.out.println("<" + myAgent.getLocalName() + ">: voici le message @guide"+tosend);
+        //System.out.println("<" + myAgent.getLocalName() + ">: here is the message: @guide"+tosend);
 
         ACLMessage message = new ACLMessage(ACLMessage.INFORM);
         message.addReceiver(profileragent.tourGuide);

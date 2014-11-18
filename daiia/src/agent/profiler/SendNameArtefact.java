@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package agent.profiler;
 
 import jade.core.AID;
@@ -26,10 +21,8 @@ class SendNameArtefact extends OneShotBehaviour {
 
     @Override
     public void action() {
-        System.out.println("<" + myAgent.getLocalName() + ">: on va envoyer le nom d'artefact au curator");
-        
-        System.out.println("<" + myAgent.getLocalName() + ">: voici le message @curator "+nameArtefact);
-
+        System.out.println("<" + myAgent.getLocalName() + ">: Artwork name sending to the curator");
+        //System.out.println("<" + myAgent.getLocalName() + ">:here is the message: @curator "+nameArtefact);
         ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
         message.addReceiver(new AID("curator", AID.ISLOCALNAME));
         message.setContent(nameArtefact);

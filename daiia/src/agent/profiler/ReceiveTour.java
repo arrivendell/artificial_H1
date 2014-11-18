@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package agent.profiler;
 
 import jade.core.AID;
@@ -21,18 +17,18 @@ class ReceiveTour extends MsgReceiver {
 
     ProfilerAgent profileragent;
     
-    public ReceiveTour(ProfilerAgent profileragent) { //, MessageTemplate mt, long deadline, DataStore ds, Object key
-        super();//, mt, deadline, ds, key);
+    public ReceiveTour(ProfilerAgent profileragent) { 
+        super();
         this.profileragent = profileragent;
     }
     
     @Override
     public void action() {
-            System.out.println("<" + myAgent.getLocalName() + ">: On est dans HANDLE MESSAGE");
+        //System.out.println("<" + myAgent.getLocalName() + ">: HANDLE MESSAGE");
         ACLMessage msg = myAgent.blockingReceive(MessageTemplate.MatchSender(profileragent.tourGuide));
         
         if (msg != null) {
-            System.out.println("<" + myAgent.getLocalName() + ">: Message recu, contient la liste des oeuvres du tour");
+            System.out.println("<" + myAgent.getLocalName() + ">: Message received, with the list of the artworks of tour");
         
             String received = msg.getContent();
             
@@ -55,40 +51,3 @@ class ReceiveTour extends MsgReceiver {
         return true;
     }
 }
-
-/*
-class ReceiveTour extends OneShotBehaviour {
-
-    ProfilerAgent profileragent;
-    
-    public ReceiveTour(ProfilerAgent profileragent) {
-        super(profileragent);
-        this.profileragent = profileragent;
-    }
-    
-    @Override
-    public void action() {
-            
-        System.out.println("<" + myAgent.getLocalName() + ">: On est dans HANDLE MESSAGE");
-        ACLMessage msg = myAgent.blockingReceive(MessageTemplate.MatchSender(profileragent.tourGuide));
-        
-        if (msg != null) {
-            System.out.println("<" + myAgent.getLocalName() + ">: Message recu, contient la liste des oeuvres du tour");
-        
-            String received = msg.getContent();
-            
-            int j=0;
-            int length = received.length();
-            
-            for(String s : Arrays.asList(received.split(";")))
-            {
-                    System.out.println(s);
-                    profileragent.tour.add(s);
-            }
-        }
-        else {
-             System.out.println("<" + myAgent.getLocalName() + ">: Message NULL");
-            block();
-        }
-    }
-    }    */

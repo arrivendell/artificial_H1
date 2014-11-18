@@ -1,15 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package agent.profiler;
 
 import jade.core.behaviours.WakerBehaviour;
 
 
 /**
- *
+ * Here to simulate an agent searching for museum on the internet and getting one
+ * to communicate with.
  * @author Nabil
  */
 class BrowseTheInternet extends WakerBehaviour {

@@ -37,7 +37,7 @@ public class TourGuideAgent extends Agent {
         dfd = new DFAgentDescription();
         dfd.setName(id);
         ServiceDescription sd = new ServiceDescription();
-        sd.setType("proposition de tour");
+        sd.setType("tour proposal");
         sd.setName(getLocalName());
         dfd.addServices(sd);
         try {
