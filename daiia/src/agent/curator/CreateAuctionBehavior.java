@@ -46,6 +46,7 @@ public class CreateAuctionBehavior extends Behaviour{
         switch (_state){
             //sending the information of auction starting
             case 0:
+            {
                 System.out.println("**** Starting the auction");
                 _messageTemplate.setPerformative(ACLMessage.INFORM);
                 _state = 1;
@@ -53,9 +54,11 @@ public class CreateAuctionBehavior extends Behaviour{
                 myAgent.send(_messageTemplate);
                 _currentPrice =_artworkToSell.getPrice()*3;
                 break;
+            }
             
                 
             case 1:
+            {
                 _messageTemplate.setPerformative(ACLMessage.CFP);
                 _messageTemplate.setContent(Long.toString(_currentPrice));
                 
@@ -63,19 +66,19 @@ public class CreateAuctionBehavior extends Behaviour{
                 _state = 2;
                 myAgent.send(_messageTemplate);
                break;
-                
+            }
+            
             case 2:
-                //System.out.println("Adding waker behavior");
+            {
                 myAgent.addBehaviour(new OneShotBehaviour() {
                     @Override
                     public void action(){
-                        ACLMessage msg ;
                         boolean queueEnded = false;
-                        
+                        ACLMessage msg ;
                         while(!(queueEnded)){
-                            msg = myAgent.blockingReceive(MessageTemplate.MatchAll(),2000);
+                            msg = myAgent.blockingReceive(1000);
                             if (msg!=null){
-                                System.out.println("message received from buyer");
+                                System.out.format("message <%s> received from buyer \r\n", msg.getContent());
                                 if (msg.getPerformative()==ACLMessage.PROPOSE){
                                     ACLMessage msgReply = msg.createReply();
                                     if(!_isSold){
@@ -90,7 +93,6 @@ public class CreateAuctionBehavior extends Behaviour{
                                         msgReply.setContent(Long.toString(_currentPrice));
                                         myAgent.send(msgReply);
                                     }
-                                   
                                 }
                                 else if (msg.getPerformative()==ACLMessage.NOT_UNDERSTOOD){
                                     _messageTemplate.removeReceiver(msg.getSender());
@@ -101,7 +103,9 @@ public class CreateAuctionBehavior extends Behaviour{
                                 queueEnded = true;
                             }
                         }
-                        if (_isSold){
+                    }
+                });
+                if (_isSold){
                             //We end the auction
                             _state=5;
                         }
@@ -119,14 +123,11 @@ public class CreateAuctionBehavior extends Behaviour{
                             }
                             
                         }
-                        
-                    }
-                });
                 break;
-            
+            }
             //ENDING
-            case 5:
-                _hasEnded = true;
+            case 5:{
+                 _hasEnded = true;
                 _messageTemplate.setPerformative(ACLMessage.INFORM);
                 if(_isSold){
                     System.out.println("**** ArtWork has been sold, auction ends"); 
@@ -136,6 +137,9 @@ public class CreateAuctionBehavior extends Behaviour{
                 }
                 _messageTemplate.setContent("NO_BIDS");
                 myAgent.send(_messageTemplate);
+                break;
+            }
+               
                 
             default:
                 break;
