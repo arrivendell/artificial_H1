@@ -63,12 +63,12 @@ public class CuratorAgent extends Agent {
     
     //Initialisation of the catalog with some French artwork.
     private void initialiseCatalog(){
-        catalog.add(new ArtWork("Guernica", "a beautiful paint ","Picasso", "painting;20th century;nature"));            
-        catalog.add(new ArtWork("La liberte guidant le peuple", "a beautiful painting, again !","Delacroix", "war;freedom;nature"));            
-        catalog.add(new ArtWork("Le baiser", "an awesome picture ","Doisneau", "photography;love;20th century"));            
-        catalog.add(new ArtWork("La montagne sainte victoire", "a splendid painting ","Cezanne", "painting;nature;mountain;france"));            
-        catalog.add(new ArtWork("La joconde", "a excellent painting ","De Vinci", "painting;legend;invention;portrait"));            
-        catalog.add(new ArtWork("The Adoration of the Magi", "a sacral painting ","Paolo di Grazia)", "painting;religion;christian;"));            
+        catalog.add(new ArtWork("Guernica", "a beautiful paint ","Picasso", "painting;20th century;nature",1000));            
+        catalog.add(new ArtWork("La liberte guidant le peuple", "a beautiful painting, again !","Delacroix", "war;freedom;nature",1000));            
+        catalog.add(new ArtWork("Le baiser", "an awesome picture ","Doisneau", "photography;love;20th century",1000));            
+        catalog.add(new ArtWork("La montagne sainte victoire", "a splendid painting ","Cezanne", "painting;nature;mountain;france",1000));            
+        catalog.add(new ArtWork("La joconde", "a excellent painting ","De Vinci", "painting;legend;invention;portrait",1000));            
+        catalog.add(new ArtWork("The Adoration of the Magi", "a sacral painting ","Paolo di Grazia)", "painting;religion;christian;",1000));            
 
     };
         
