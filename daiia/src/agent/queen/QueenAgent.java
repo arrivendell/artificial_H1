@@ -50,18 +50,18 @@ public class QueenAgent extends Agent {
     
     @Override
     protected void setup() {
-        System.out.format("Hello, queen %s is ready !", getAID().getLocalName() );
+        System.out.format("Hello, queen %s is ready ! \r\n", getAID().getLocalName() );
         
         
         // We get the parameters
         Object[] args = getArguments();
         if (args != null && args.length > 2){
-            _sizeChess = (int) args[0];
+            _sizeChess = Integer.parseInt((String) args[0]);
             
            _chess = new String[(_sizeChess*_sizeChess)+1]; // We begin the chess at the index 1
            Arrays.fill(_chess, EMPTY_POSITION);//fill with empty positions
            
-            _positionLine = (int) args[1];
+            _positionLine = Integer.parseInt( (String) args[1]);
              if (_positionLine == 1){
                  _isFirst = true;
              }
@@ -123,6 +123,7 @@ public class QueenAgent extends Agent {
             fsm.registerTransition("moveQueen", "Initial", GO_WAITING);
             fsm.registerTransition("moveQueen", "end", PRINT_CHESS);
             fsm.registerTransition("backtrackQueen", "Initial", GO_WAITING);  
+            fsm.registerTransition("backtrackQueen", "end", PRINT_CHESS);  
             
             fsm.registerTransition("forwardChain", "Initial", GO_WAITING);  
             fsm.registerTransition("initiateMove", "Initial", GO_WAITING);  
@@ -149,6 +150,7 @@ public class QueenAgent extends Agent {
             ACLMessage msgReceived = myAgent.receive();
 
             if (msgReceived != null) {
+                System.out.format("mesgReceived <%s> \r\n", msgReceived.getPerformative());
                 _lastMessage = msgReceived;
                 switch(msgReceived.getPerformative()){
                     
@@ -159,18 +161,21 @@ public class QueenAgent extends Agent {
                         }
                         else {
                             result = FORWARD_CHAIN;
-                            
-                        
                         }
+                        break;
                         
                     }
                     case ACLMessage.REQUEST:{
                         result = RECEIVED_MOVE;
+                        break;
+
                     }
                     case ACLMessage.REFUSE:{
                         result = RECEIVED_BACKTRACK;
-                    
+                        break;
                     }
+                    default:
+                        break;
                         
                 }
 
@@ -194,7 +199,13 @@ public class QueenAgent extends Agent {
         @Override 
         public void action() {
             //System.o  ut.println("<queen> Initial state");
-            
+            for(int i = 1 ; i< _chess.length-_sizeChess; i+=_sizeChess){
+                for (int j=i; j< i+_sizeChess; j++)
+                {
+                    System.out.print(_chess[j]+ " | ");
+                }
+                System.out.println("");
+            }
             _chess = parsePositions(_lastMessage.getContent());            
             listPossiblePositions = findFreePosition(_chess);
             if (listPossiblePositions.size() >0){
@@ -217,7 +228,7 @@ public class QueenAgent extends Agent {
         
         @Override 
         public void action() {
-            //System.o  ut.println("<queen> Initial state");
+            System.out.println("<queen> forward behaviour");
             _previousQueen = _lastMessage.getSender();
             ACLMessage msgChaining = new ACLMessage(ACLMessage.PROPAGATE);
             msgChaining.addReceiver(new AID(_nextQueen, AID.ISLOCALNAME));
@@ -240,8 +251,9 @@ public class QueenAgent extends Agent {
             //System.o  ut.println("<queen> Initial state");
             currentPosition = ((_positionLine-1) * (_sizeChess)) +1;
             //TODO add here the choice of random position
+            listPossiblePositions = findFreePosition(_chess);
             _chess[currentPosition] = myAgent.getLocalName();
-            
+            listPossiblePositions.remove(0);
             if(_isLast){
                 _solutionFound = true;
                 result = PRINT_CHESS;
@@ -331,7 +343,7 @@ public class QueenAgent extends Agent {
         @Override 
         public void action() {
             
-            if(_isFirst){
+            if(_isFirst ){ //&& (listPossiblePositions.size()==0 || _solutionFound
                 result = PRINT_CHESS;
             }
             else{
@@ -405,6 +417,49 @@ public class QueenAgent extends Agent {
      //cases without a queen contains "empty"
      private List<Integer> findFreePosition(String[] chess){
          
-         return new ArrayList<Integer>();
+         List<Integer> result = new ArrayList<Integer>();
+         
+         for(int pos = ((_positionLine - 1) * _sizeChess+ 1) ; pos<((_positionLine) * _sizeChess+ 1) ; pos++ ){
+             boolean isNotFree = false;
+             
+             for(int i = (pos%_sizeChess==0)?_sizeChess : pos%_sizeChess; !isNotFree && i< _chess.length ; i+=_sizeChess){
+                 if ( !_chess[i].equals(EMPTY_POSITION) ){
+                     isNotFree = true;
+                 }
+             }
+             int row = _positionLine;
+             int column = (pos%_sizeChess==0)?_sizeChess : pos%_sizeChess;
+             int i = pos;
+             while (!isNotFree && i< _chess.length){
+                 if ( !_chess[i].equals(EMPTY_POSITION) ){
+                     isNotFree = true;
+                 }
+                 else{
+                     row++;
+                     column++;
+                     i = ((row-1)*_sizeChess)+column;
+                 }
+             }
+             
+             i=pos;
+             row = _positionLine;
+             column = (pos%_sizeChess==0)?_sizeChess : pos%_sizeChess;
+             while (!isNotFree && i> 0){
+                 if ( !_chess[i].equals(EMPTY_POSITION) ){
+                     isNotFree = true;
+                 }
+                 else{
+                     row--;
+                     column--;
+                     i = ((row-1)*_sizeChess)+column;
+                 }
+             }
+             
+             if(!isNotFree){
+                result.add(pos);
+             }
+         }
+         System.out.println(result);
+         return result;
      }
 }
