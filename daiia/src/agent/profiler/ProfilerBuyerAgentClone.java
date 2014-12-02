@@ -42,6 +42,56 @@ public class ProfilerBuyerAgentClone extends Agent {
         doClone(l, "clone1");
         doClone(l, "clone2");
         
+        
+        
+         
+        
+        
+        
+        
+        
+                
+    }
+    
+    void init(){
+        
+        FSMBehaviour fsm = new FSMBehaviour(this){
+            @Override
+            public int onEnd() {
+                reset();
+                myAgent.addBehaviour(this);
+                //System.out.format("<%s> Fsm exit \r\n", myAgent.getLocalName());
+                return super.onEnd();
+            }
+        };
+        
+        
+        _lowPrice = rand.nextInt((500000 - 50000) + 1) + 50000;
+
+        //State definitions
+        fsm.registerFirstState(new initialReceiveBehaviour(), "Initial");
+        fsm.registerState(new CFPWaitBehavior(), "waitCFP");
+        fsm.registerState(new HandleCFPBehavior(), "handleCFP");
+        fsm.registerLastState(new EndBehavior(), "end");
+       
+        //transitions definition
+        fsm.registerTransition("Initial", "Initial", 0);
+        fsm.registerTransition("Initial", "waitCFP", 1);
+        fsm.registerTransition("waitCFP", "end", 10);
+        fsm.registerTransition("waitCFP", "handleCFP", 3);
+        fsm.registerTransition("handleCFP", "end", 10);        
+        fsm.registerTransition("handleCFP", "handleCFP", 3);
+
+        fsm.registerTransition("waitCFP", "Initial", 0);
+        fsm.registerTransition("waitCFP", "waitCFP", 1);
+        
+        addBehaviour(fsm);
+        
+        
+    }
+    
+    protected void afterClone() {
+// ----------------------------
         //register buyer services
         DFAgentDescription dfd = new DFAgentDescription();
         
@@ -57,42 +107,9 @@ public class ProfilerBuyerAgentClone extends Agent {
             fe.printStackTrace();
         }
         
-         FSMBehaviour fsm = new FSMBehaviour(this){
-            @Override
-            public int onEnd() {
-                reset();
-                myAgent.addBehaviour(this);
-                //System.out.format("<%s> Fsm exit \r\n", myAgent.getLocalName());
-                return super.onEnd();
-            }
-        };
-        
-        _lowPrice = rand.nextInt((500000 - 50000) + 1) + 50000;
+	 init();
+   }
 
-         
-        //State definitions
-        fsm.registerFirstState(new initialReceiveBehaviour(), "Initial");
-        fsm.registerState(new CFPWaitBehavior(), "waitCFP");
-        fsm.registerState(new HandleCFPBehavior(), "handleCFP");
-        fsm.registerLastState(new EndBehavior(), "end");
-       
-
-        //transitions definition
-        fsm.registerTransition("Initial", "Initial", 0);
-        fsm.registerTransition("Initial", "waitCFP", 1);
-        fsm.registerTransition("waitCFP", "end", 10);
-        fsm.registerTransition("waitCFP", "handleCFP", 3);
-        fsm.registerTransition("handleCFP", "end", 10);        
-        fsm.registerTransition("handleCFP", "handleCFP", 3);
-
-        fsm.registerTransition("waitCFP", "Initial", 0);
-        fsm.registerTransition("waitCFP", "waitCFP", 1);
-        
-        addBehaviour(fsm);
-        
-        
-                
-    }
     
 
     private void InitialiseProfile(){
