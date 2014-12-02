@@ -13,6 +13,7 @@ import jade.lang.acl.ACLMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -32,6 +33,8 @@ public class QueenAgent2 extends Agent {
     static String EMPTY_POSITION = "empty";
     static String CHESS_SEPARATOR = "#";
     
+    static int MAX_COUNTS=1000;
+    
     private int _sizeChess;
     private boolean _isFirst;
     private boolean _isLast;
@@ -45,8 +48,11 @@ public class QueenAgent2 extends Agent {
     
     private boolean _chainIsOk = false;
     private boolean _solutionFound = false;
-    
+    private int counter = 0;
+    Random rand = new Random();
+
     public List<Integer> listPossiblePositions = new ArrayList<Integer>();
+    private ArrayList<String> _Solutions = new ArrayList<>();
     
     @Override
     protected void setup() {
@@ -59,7 +65,7 @@ public class QueenAgent2 extends Agent {
             _sizeChess = Integer.parseInt((String) args[0]);
             
            _chess = new String[(_sizeChess*_sizeChess)+1]; // We begin the chess at the index 1
-           Arrays.fill(_chess, EMPTY_POSITION);//fill with empty positions
+           
            
             _positionLine = Integer.parseInt( (String) args[1]);
              if (_positionLine == 1){
@@ -107,6 +113,7 @@ public class QueenAgent2 extends Agent {
             fsm.registerState(new BacktrackQueenBehaviour(), "backtrackQueen");
             fsm.registerState(new ForwardChainBehaviour(), "forwardChain");
             fsm.registerState(new InitiateMoveBehaviour(), "initiateMove");
+            fsm.registerState(new RepeaterBehaviour(), "repeateSolution");
             fsm.registerLastState(new EndBehaviour(), "end");
 
 
@@ -123,6 +130,8 @@ public class QueenAgent2 extends Agent {
             fsm.registerTransition("moveQueen", "Initial", GO_WAITING);
             fsm.registerTransition("moveQueen", "end", PRINT_CHESS);
             fsm.registerTransition("backtrackQueen", "Initial", GO_WAITING);  
+            fsm.registerTransition("repeateSolution", "Initial", GO_WAITING);  
+            fsm.registerTransition("repeateSolution", "end", PRINT_CHESS);  
             fsm.registerTransition("backtrackQueen", "end", PRINT_CHESS);  
             
             fsm.registerTransition("forwardChain", "Initial", GO_WAITING);  
@@ -171,7 +180,7 @@ public class QueenAgent2 extends Agent {
 
                     }
                     case ACLMessage.REFUSE:{
-                        System.out.println(getName() + " received backtrack from " + msgReceived.getSender().getName());
+                        //System.out.println(getName() + " received backtrack from " + msgReceived.getSender().getName());
                         result = RECEIVED_BACKTRACK;
                         break;
                     }
@@ -223,7 +232,7 @@ public class QueenAgent2 extends Agent {
         
         @Override 
         public void action() {
-            System.out.println("<queen> forward behaviour");
+           // System.out.println("<queen> forward behaviour");
             _previousQueen = _lastMessage.getSender();
             ACLMessage msgChaining = new ACLMessage(ACLMessage.PROPAGATE);
             msgChaining.addReceiver(new AID(_nextQueen, AID.ISLOCALNAME));
@@ -243,14 +252,21 @@ public class QueenAgent2 extends Agent {
         
         @Override 
         public void action() {
+            Arrays.fill(_chess, EMPTY_POSITION);//fill with empty positions
             //System.o  ut.println("<queen> Initial state");
             currentPosition = ((_positionLine-1) * (_sizeChess)) +1;
-            //TODO add here the choice of random position
             listPossiblePositions = findFreePosition(_chess);
+            _solutionFound = false;
+             //add here the choice of random position
+            int randPosition = rand.nextInt(listPossiblePositions.size());
+            currentPosition = listPossiblePositions.get(randPosition);
+            listPossiblePositions.remove(randPosition);
+            
             _chess[currentPosition] = myAgent.getLocalName();
-            listPossiblePositions.remove(0);
+            
             if(_isLast){
                 _solutionFound = true;
+                
                 result = PRINT_CHESS;
             } 
             else{
@@ -278,17 +294,24 @@ public class QueenAgent2 extends Agent {
         
         @Override 
         public void action() {
-            System.out.println("<queen> Move queen");
+            //System.out.println("<queen> Move queen");
             _chess[currentPosition] = EMPTY_POSITION;
-            //TODO add here the choice of random position
-            currentPosition = listPossiblePositions.get(0);
-            listPossiblePositions.remove(0);
+            
+            //add here the choice of random position
+            int randPosition = rand.nextInt(listPossiblePositions.size());
+            currentPosition = listPossiblePositions.get(randPosition);
+            listPossiblePositions.remove(randPosition);
+            
             _chess[currentPosition] = myAgent.getLocalName();
-            printChess();
+            //printChess();
             
             if(_isLast){
                 _solutionFound = true;
-                result = PRINT_CHESS;
+                printChess(_chess);
+                result = GO_WAITING;
+                ACLMessage msgToSend = new ACLMessage(ACLMessage.REFUSE);
+                msgToSend.addReceiver(getAID());
+                send(msgToSend);
             } 
             else{
                 ACLMessage requestMoveMessage = new ACLMessage(ACLMessage.REQUEST);
@@ -337,14 +360,14 @@ public class QueenAgent2 extends Agent {
         
         @Override 
         public void action() {
-            System.out.println(getName() + "   Backtracking");
+            //System.out.println(getName() + "   Backtracking");
             if(_isFirst ){ //&& (listPossiblePositions.size()==0 || _solutionFound
                 result = PRINT_CHESS;
             }
             else{
                 ACLMessage requestMoveMessage = new ACLMessage(ACLMessage.REFUSE);
                 requestMoveMessage.addReceiver(_previousQueen);
-                System.out.println(getName() + " send backtrack to " + _previousQueen.getName());
+                //System.out.println(getName() + " send backtrack to " + _previousQueen.getName());
                 send(requestMoveMessage);
                 
                 result = GO_WAITING;
@@ -360,7 +383,43 @@ public class QueenAgent2 extends Agent {
     }
     
         
+     private class RepeaterBehaviour extends OneShotBehaviour{
+        int result = 0;
         
+        @Override 
+        public void action() {
+            
+            if(_solutionFound){
+                //System.out.println("SOLUTION FOUND");
+                //printChess();
+            }
+            else{
+                //System.out.println("NO SOLUTIONS FOUND");
+            }
+            
+            String solution = parseChessToString(_chess);
+            if (!_Solutions.contains(solution))
+            {
+                _Solutions.add(solution);
+            }
+
+            //System.out.println(_Solutions.size());
+            
+            if(counter < MAX_COUNTS){
+                result = GO_WAITING;
+                counter++;
+            }
+            else{
+                result = PRINT_CHESS;
+            }
+            
+        }
+        
+        public int onEnd(){
+            //System.out.format("<initialReceiveBehaviour> ended with transition %d \r\n", result);
+            return result;
+        }
+    }    
         
         
     private class EndBehaviour extends OneShotBehaviour{
@@ -370,19 +429,20 @@ public class QueenAgent2 extends Agent {
         public void action() {
             
             if(_solutionFound){
-                System.out.println("SOLUTION FOUND");
+                System.out.println("SOLUTION FOUND : " + _Solutions.size());
+                for(String s : _Solutions){
+                    printChess(parsePositions(s));
+                    System.out.println("");
+                }
+                
             }
             else{
                 System.out.println("NO SOLUTIONS FOUND");
             }
             
-             
+             doDelete();
         }
         
-        public int onEnd(){
-            //System.out.format("<initialReceiveBehaviour> ended with transition %d \r\n", result);
-            return result;
-        }
     } 
     
      private String[] parsePositions(String contentMessage){
@@ -480,17 +540,20 @@ public class QueenAgent2 extends Agent {
                 result.add(pos);
              }
          }
-         System.out.println(result);
+         //System.out.println(result);
          return result;
      }
      
-     private void printChess(){
-         for(int i = 1 ; i<= _chess.length-_sizeChess; i+=_sizeChess){
+     private void printChess(String[] chess){
+         for(int i = 1 ; i<= chess.length-_sizeChess; i+=_sizeChess){
                 for (int j=i; j< i+_sizeChess; j++)
                 {
-                    System.out.print(((_chess[j].equals(EMPTY_POSITION)) ? "_" : "X") + " | ");
+                    System.out.print(((chess[j].equals(EMPTY_POSITION)) ? "_" : "X") + " | ");
                 }
                 System.out.println("");
             }
+                         System.out.println("");
+                System.out.println("");
+
      }
 }
